@@ -1,0 +1,6 @@
+{
+  "secret_key": "22aac5bbbb14700e6e205cfc45fba1c6b2864764f165d649c3a48a2d806ca79f",
+  "site_name": "RIVAN FILTER FINDER",
+  "admin_hash": "scrypt:32768:8:1$Ls7c9rPwXANtI0P4$bf7bdcd2beb26d0db1765b45d1826fa179af83e06c39e6542ab6ffaa0dc63c184e64cc62ac840dadd99ab822d16b40b19fb0868003320fcb8aa2c654503120cd",
+  "logo": "259dc05a8f8f4b1193acac27a584bd61.png"
+}

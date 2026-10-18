@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Admin - {{ site_name }}</title>
+  <meta name="theme-color" content="#0F4C5C">
+  <link rel="icon" href="/icon/192.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-row">
+      <a class="brand" href="/">
+        <img class="logo" id="hdr-logo" src="/logo?v={{ logo_v }}" alt="">
+        <span class="brand-name" id="hdr-name">{{ site_name }}</span>
+      </a>
+      <div class="top-actions">
+        <a class="admin-link" href="/">View search</a>
+        <button class="btn small" id="logout" hidden>Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Sign in -->
+    <section id="login-view" class="panel narrow" hidden>
+      <h1>Admin sign in</h1>
+      <form id="login-form">
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required>
+        </div>
+        <p class="error" id="login-error" role="alert"></p>
+        <button class="btn primary" type="submit">Sign in</button>
+      </form>
+    </section>
+
+    <!-- Signed in -->
+    <div id="app-view" hidden>
+      <div class="tabs" role="tablist" aria-label="Admin sections">
+        <button role="tab" id="atab-filters" aria-controls="apanel-filters" aria-selected="true">Filters</button>
+        <button role="tab" id="atab-settings" aria-controls="apanel-settings" aria-selected="false" tabindex="-1">Settings</button>
+      </div>
+
+      <section id="apanel-filters" role="tabpanel" aria-labelledby="atab-filters">
+        <div class="toolbar">
+          <input id="admin-q" type="search" placeholder="Search your filters by part number or brand" aria-label="Search your filters">
+          <button class="btn primary" id="add-filter">Add filter</button>
+        </div>
+        <p id="admin-status" class="status" role="status" aria-live="polite"></p>
+        <div class="table-wrap">
+          <table class="list">
+            <thead><tr><th>Image</th><th>Part number</th><th>Type</th><th>Brand</th><th>H × Ø × mouth (mm)</th><th>Thread</th><th></th></tr></thead>
+            <tbody id="admin-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="apanel-settings" role="tabpanel" aria-labelledby="atab-settings" hidden>
+        <div class="panel">
+          <h2>Site name and logo</h2>
+          <form id="settings-form">
+            <div class="field">
+              <label for="set-name">Site name</label>
+              <input id="set-name" maxlength="60">
+            </div>
+            <div class="field">
+              <label for="set-logo">Logo (PNG, JPG or WebP)</label>
+              <input id="set-logo" type="file" accept="image/png,image/jpeg,image/webp">
+            </div>
+            <p class="error" id="settings-msg" role="status"></p>
+            <button class="btn primary" type="submit">Save settings</button>
+          </form>
+        </div>
+        <div class="panel">
+          <h2>Change password</h2>
+          <form id="password-form">
+            <div class="field"><label for="pw-current">Current password</label>
+              <input id="pw-current" type="password" autocomplete="current-password" required></div>
+            <div class="field"><label for="pw-new">New password (8 characters or more)</label>
+              <input id="pw-new" type="password" autocomplete="new-password" minlength="8" required></div>
+            <p class="error" id="password-msg" role="status"></p>
+            <button class="btn primary" type="submit">Change password</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Add / edit filter -->
+  <dialog id="filter-dialog" class="editor">
+    <form id="filter-form" autocomplete="off">
+      <h2 id="dialog-title">Add filter</h2>
+      <div class="spec-grid">
+        <div class="field">
+          <label for="f-type">Filter type</label>
+          <select id="f-type" name="type" required><option value="">Choose a type</option></select>
+        </div>
+        <div class="field">
+          <label for="f-part">Part number</label>
+          <input id="f-part" name="part_number" required>
+        </div>
+        <div class="field">
+          <label for="f-brand">Brand</label>
+          <input id="f-brand" name="brand">
+        </div>
+        <div class="field">
+          <label for="f-thread">Thread</label>
+          <select id="f-thread" name="thread_choice"></select>
+          <input id="f-thread-other" name="thread_other" placeholder="Type the thread, e.g. M20x1.5" hidden>
+        </div>
+        <div class="field">
+          <label for="f-height">Height (mm)</label>
+          <input id="f-height" name="height_mm" type="number" step="any" min="0" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="f-diameter">Diameter (mm)</label>
+          <input id="f-diameter" name="diameter_mm" type="number" step="any" min="0" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="f-mouth">Opening size (mm)</label>
+          <input id="f-mouth" name="mouth_mm" type="number" step="any" min="0" inputmode="decimal">
+        </div>
+        <div class="field sep-only" hidden>
+          <label for="f-flange-od">Flange outer diameter (mm)</label>
+          <input id="f-flange-od" name="flange_od_mm" type="number" step="any" min="0" inputmode="decimal">
+        </div>
+        <div class="field sep-only" hidden>
+          <label for="f-flange-holes">Flange holes</label>
+          <input id="f-flange-holes" name="flange_holes" type="number" step="1" min="0" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="f-equiv">Equivalent part numbers (one per line)</label>
+        <textarea id="f-equiv" name="equivalents" rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-machines">Compatible machinery and equipment (one per line)</label>
+        <textarea id="f-machines" name="machines" rows="4" placeholder="Caterpillar 320D&#10;Volvo EC210B"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-notes">Notes</label>
+        <textarea id="f-notes" name="notes" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-image">Image</label>
+        <div class="img-row">
+          <img id="f-preview" alt="" hidden>
+          <input id="f-image" name="image" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+        </div>
+        <label class="check" id="remove-row" hidden><input type="checkbox" id="f-remove-image"> Remove the current image</label>
+      </div>
+
+      <p class="error" id="form-error" role="alert"></p>
+      <div class="actions">
+        <button class="btn primary" type="submit">Save filter</button>
+        <button class="btn" type="button" id="cancel-dialog">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>

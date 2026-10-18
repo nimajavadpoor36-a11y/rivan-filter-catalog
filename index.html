@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ site_name }}</title>
+  <meta name="theme-color" content="#0F4C5C">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon/192.png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-row">
+      <a class="brand" href="/">
+        <img class="logo" src="/logo?v={{ logo_v }}" alt="">
+        <span class="brand-name">{{ site_name }}</span>
+      </a>
+      <a class="admin-link" href="/admin">ادمین</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="tabs" role="tablist" aria-label="Search method">
+      <button role="tab" id="tab-vehicle" aria-controls="panel-vehicle" aria-selected="true">نام خودرو یا دستگاه</button>
+      <button role="tab" id="tab-part" aria-controls="panel-part" aria-selected="false" tabindex="-1">کد فنی</button>
+      <button role="tab" id="tab-specs" aria-controls="panel-specs" aria-selected="false" tabindex="-1">مشخصات فنی</button>
+    </div>
+
+    <section class="panel" id="panel-vehicle" role="tabpanel" aria-labelledby="tab-vehicle">
+      <label class="field big" for="q-vehicle">فیلتر دستگاه یا ماشین من چیه؟</label>
+      <input id="q-vehicle" type="search" autocomplete="off" placeholder="e.g. Cat 320, Volvo EC210, Komatsu PC200">
+      <p class="hint">قسمتی یا تمام نام خودرو یا دستگاه خودرا وارد کنید</p>
+    </section>
+
+    <section class="panel" id="panel-part" role="tabpanel" aria-labelledby="tab-part" hidden>
+      <label class="field big" for="q-part">کد فنی</label>
+      <input id="q-part" type="search" autocomplete="off" placeholder="e.g. P550008 or 1R-0750">
+      <p class="hint">فاصله‌ها و حروف بزرگ اهمیتی ندارند. اعداد معادل نیز جستجو می‌شوند.</p>
+    </section>
+
+    <section class="panel" id="panel-specs" role="tabpanel" aria-labelledby="tab-specs" hidden>
+      <form id="spec-form" class="spec-grid">
+        <div class="field">
+          <label for="s-type">نوع فیلتر</label>
+          <select id="s-type" name="type"><option value="">Any type</option></select>
+        </div>
+        <div class="field">
+          <label for="s-thread">مشخصات رزوه</label>
+          <select id="s-thread" name="thread"><option value="">Any thread</option></select>
+        </div>
+        <div class="field">
+          <label for="s-height">ارتفاع فیلتر (mm)</label>
+          <input id="s-height" name="height" type="number" step="any" min="0" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="s-diameter">قطرفیلتر (mm)</label>
+          <input id="s-diameter" name="diameter" type="number" step="any" min="0" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="s-mouth">دهنه فیلتر (mm)</label>
+          <input id="s-mouth" name="mouth" type="number" step="any" min="0" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="s-tol">تلورانس</label>
+          <select id="s-tol" name="tol">
+            <option value="0">Exact</option>
+            <option value="0.5">± 0.5 mm</option>
+            <option value="1" selected>± 1 mm</option>
+            <option value="2">± 2 mm</option>
+            <option value="5">± 5 mm</option>
+          </select>
+        </div>
+        <div class="field sep-only" hidden>
+          <label for="s-flange-od">قطربیرونی فلنچ سپرایتور (mm)</label>
+          <input id="s-flange-od" name="flange_od" type="number" step="any" min="0" inputmode="decimal">
+        </div>
+        <div class="field sep-only" hidden>
+          <label for="s-flange-holes">تعدادسوراخ فلنچ سپرایتور</label>
+          <input id="s-flange-holes" name="flange_holes" type="number" step="1" min="0" inputmode="numeric">
+        </div>
+        <div class="actions">
+          <button class="btn primary" type="submit">جستجو</button>
+          <button class="btn" type="reset" id="spec-reset">پاکسازی</button>
+        </div>
+      </form>
+    </section>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <div id="results" class="results"></div>
+  </main>
+
+  <dialog id="lightbox" class="lightbox">
+    <form method="dialog"><button class="btn close" aria-label="Close image">Close</button></form>
+    <img id="lightbox-img" alt="">
+  </dialog>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>
